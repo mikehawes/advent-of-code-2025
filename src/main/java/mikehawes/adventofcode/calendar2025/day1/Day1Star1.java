@@ -1,4 +1,4 @@
-package mikehawes.adventofcode.calendar2025;
+package mikehawes.adventofcode.calendar2025.day1;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +10,7 @@ public class Day1Star1 {
 
     static void main() throws IOException {
         String document = Files.readString(Path.of("input/day1.txt"));
-        IO.println("Password: "+findPassword(document));
+        IO.println("Password: " + findPassword(document));
     }
 
     public static String findPassword(String document) {

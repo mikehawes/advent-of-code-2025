@@ -1,4 +1,4 @@
-package mikehawes.adventofcode.calendar2025;
+package mikehawes.adventofcode.calendar2025.day1;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,7 @@ public class Day1Star1Test {
                 L82
                 """;
 
-        String password = Day1Star1.findPassword(document);
-
-        assertThat(password).isEqualTo("3");
+        assertThat(Day1Star1.findPassword(document))
+                .isEqualTo("3");
     }
 }
