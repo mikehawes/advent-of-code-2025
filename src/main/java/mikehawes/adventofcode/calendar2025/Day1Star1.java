@@ -1,9 +1,18 @@
 package mikehawes.adventofcode.calendar2025;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
 public class Day1Star1 {
+
+    static void main() throws IOException {
+        String document = Files.readString(Path.of("input/day1.txt"));
+        IO.println("Password: "+findPassword(document));
+    }
+
     public static String findPassword(String document) {
         long position = 50;
         long password = 0;

@@ -5,6 +5,8 @@ build/
 !**/src/test/**/build/
 .kotlin
 
+input/
+
 ### IntelliJ IDEA ###
 .idea/
 *.iws
