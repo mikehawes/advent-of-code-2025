@@ -8,10 +8,7 @@ public class Day1Star1Test {
 
     @Test
     void should_read_moves() {
-        String document = """
-                L12
-                R42
-                """;
+        String document = "L12\nR42";
 
         assertThat(Day1Star1.parseMoves(document))
                 .containsExactly(-12L, 42L);

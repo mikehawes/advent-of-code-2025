@@ -5,7 +5,16 @@ import java.util.List;
 
 public class Day1Star1 {
     public static String findPassword(String document) {
-        return "3";
+        long position = 50;
+        long password = 0;
+        for(long move : parseMoves(document)) {
+            position += move;
+            position %= 100;
+            if(position == 0) {
+                password++;
+            }
+        }
+        return ""+password;
     }
 
     public static List<Long> parseMoves(String document) {
