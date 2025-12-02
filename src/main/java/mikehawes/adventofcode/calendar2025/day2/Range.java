@@ -15,7 +15,7 @@ public record Range(long start, long end, String startString, String endString) 
                 .map(Range::from);
     }
 
-    public long sumInvalidIds() {
+    public long sumIdsWithOneRepeat() {
         long sum = 0;
         for (long i = start; i <= end; i++) {
             String id = Long.toString(i);
@@ -25,5 +25,32 @@ public record Range(long start, long end, String startString, String endString) 
             }
         }
         return sum;
+    }
+
+    public long sumIdsWithRepeats() {
+        long sum = 0;
+        for (long i = start; i <= end; i++) {
+            String id = Long.toString(i);
+            int middle = id.length() / 2;
+            for(int j = 1; j <= middle; j++) {
+                if(isRepeat(id, id.substring(0, j))) {
+                    sum += i;
+                    break;
+                }
+            }
+        }
+        return sum;
+    }
+
+    private static boolean isRepeat(String id, String substring) {
+        if (id.length() % substring.length() != 0) {
+            return false;
+        }
+        for(int i=substring.length(); i<id.length(); i += substring.length()) {
+            if (!id.startsWith(substring, i)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
