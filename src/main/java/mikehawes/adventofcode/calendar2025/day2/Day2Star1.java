@@ -1,13 +1,21 @@
 package mikehawes.adventofcode.calendar2025.day2;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class Day2Star1 {
 
-    public static long countInvalidIdsInRanges(String ranges) {
+    static void main() throws IOException {
+        String document = Files.readString(Path.of("input/day2.txt"));
+        IO.println("Invalid IDs sum: " + sumInvalidIdsInRanges(document));
+    }
+
+    public static long sumInvalidIdsInRanges(String ranges) {
         return Range.streamFromString(ranges)
-                .mapToLong(Range::countInvalidIds)
+                .mapToLong(Range::sumInvalidIds)
                 .sum();
     }
 
@@ -19,20 +27,20 @@ public class Day2Star1 {
         }
 
         public static Stream<Range> streamFromString(String ranges) {
-            return Arrays.stream(ranges.split(","))
+            return Arrays.stream(ranges.trim().split(","))
                     .map(Range::from);
         }
 
-        public long countInvalidIds() {
-            int count = 0;
+        public long sumInvalidIds() {
+            long sum = 0;
             for(long i = start; i <= end; i++) {
                 String id = Long.toString(i);
                 int middle = id.length() / 2;
                 if(id.substring(0, middle).equals(id.substring(middle))) {
-                    count++;
+                    sum += i;
                 }
             }
-            return count;
+            return sum;
         }
     }
 }
