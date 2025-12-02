@@ -1,9 +1,14 @@
 package mikehawes.adventofcode.calendar2025.day2;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 public class Day2Star1 {
 
-    public static long countInvalidIdsInRange(String rangeString) {
-        return Range.from(rangeString).countInvalidIds();
+    public static long countInvalidIdsInRanges(String ranges) {
+        return Range.streamFromString(ranges)
+                .mapToLong(Range::countInvalidIds)
+                .sum();
     }
 
     public record Range(long start, long end, String startString, String endString) {
@@ -11,6 +16,11 @@ public class Day2Star1 {
         public static Range from(String rangeString) {
             String[] parts = rangeString.split("-");
             return new Range(Long.parseLong(parts[0]), Long.parseLong(parts[1]), parts[0], parts[1]);
+        }
+
+        public static Stream<Range> streamFromString(String ranges) {
+            return Arrays.stream(ranges.split(","))
+                    .map(Range::from);
         }
 
         public long countInvalidIds() {
