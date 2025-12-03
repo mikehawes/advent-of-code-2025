@@ -14,22 +14,40 @@ public record Bank(List<Long> batteries) {
     }
 
     public long findMaxJoltageFromTwoBatteries() {
-        BatteryInBank maxBattery = findMaxBatteryWithSpaceAfter();
-        long maxSecond = 0;
-        for (int i = maxBattery.index() + 1; i < batteries.size(); i++) {
-            long joltage = batteries.get(i);
-            if (joltage > maxSecond) {
-                maxSecond = joltage;
-            }
-        }
-        return maxBattery.joltage() * 10 + maxSecond;
+        return findMaxJoltageFromNBatteries(2);
     }
 
-    private BatteryInBank findMaxBatteryWithSpaceAfter() {
+    public long findMaxJoltageFromTwelveBatteries() {
+        return findMaxJoltageFromNBatteries(12);
+    }
+
+    public long findMaxJoltageFromNBatteries(int n) {
+        int position = 0;
+        long exponent = positionExponent(n);
+        long maxJoltage = 0;
+        for (int i = 0; i < n; i++) {
+            int space = n - i - 1;
+            BatteryInBank maxBattery = findMaxBatteryWithStartAndSpaceAfter(position, space);
+            maxJoltage += maxBattery.joltage() * exponent;
+            exponent /= 10;
+            position = maxBattery.index() + 1;
+        }
+        return maxJoltage;
+    }
+
+    private static long positionExponent(int position) {
+        long exponent = 1;
+        for (int i = 1; i < position; i++) {
+            exponent *= 10;
+        }
+        return exponent;
+    }
+
+    private BatteryInBank findMaxBatteryWithStartAndSpaceAfter(int start, int space) {
         int foundIndex = 0;
         long maxJoltage = 0;
-        int searchEnd = batteries.size() - 1;
-        for (int i = 0; i < searchEnd; i++) {
+        int searchEnd = batteries.size() - space;
+        for (int i = start; i < searchEnd; i++) {
             long joltage = batteries.get(i);
             if (joltage > maxJoltage) {
                 foundIndex = i;
