@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 public class Day6Star1 {
 
@@ -30,37 +29,5 @@ public class Day6Star1 {
                 .mapToObj(i -> Problem.from(i, data, operations.get(i)))
                 .mapToLong(Problem::calculate)
                 .sum();
-    }
-
-    private enum Operation {
-        Add, Multiply;
-
-        public static Operation from(String string) {
-            return switch (string) {
-                case "*" -> Multiply;
-                case "+" -> Add;
-                default -> throw new IllegalArgumentException("Unrecognised operation: "+string);
-            };
-        }
-    }
-
-    private record Problem(List<Long> numbers, Operation operation) {
-
-        public static Problem from(int index, List<List<Long>> data, Operation operation) {
-            List<Long> numbers = data.stream()
-                    .map(line -> line.get(index))
-                    .toList();
-            return new Problem(numbers, operation);
-        }
-
-        public long calculate() {
-            LongStream stream = numbers.stream().mapToLong(Long::longValue);
-            long result = switch (operation) {
-                case Multiply -> stream.reduce(1, (acc, number) -> acc * number);
-                case Add -> stream.reduce(0, Long::sum);
-            };
-            IO.println(this + " = " + result);
-            return result;
-        }
     }
 }
