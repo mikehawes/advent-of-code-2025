@@ -13,18 +13,25 @@ public record Problem(List<Long> numbers, Operation operation) {
         return new Problem(numbers, operation);
     }
 
-    public static Problem from(List<String> parts, Operation operation) {
-        int maxLength = parts.stream().mapToInt(String::length).max().orElseThrow();
-        List<Long> numbers = new ArrayList<>(maxLength);
-        for (int i = maxLength - 1; i >= 0; i--) {
-            StringBuilder number = new StringBuilder();
-            for (String part : parts) {
-                if (part.length() > i) {
-                    number.append(part.charAt(i));
-                }
+    public static List<Problem> listFromColumns(List<String> columns, List<Operation> operations) {
+        List<Problem> result = new ArrayList<>();
+        List<String> problem = new ArrayList<>();
+        for(String column : columns) {
+            if(column.isBlank()) {
+                result.add(fromColumns(problem, operations.get(result.size())));
+                problem = new ArrayList<>();
+            } else {
+                problem.add(column);
             }
-            numbers.add(Long.parseLong(number.toString()));
         }
+        result.add(fromColumns(problem, operations.get(result.size())));
+        return result;
+    }
+
+    public static Problem fromColumns(List<String> columns, Operation operation) {
+        List<Long> numbers = columns.reversed().stream()
+                .map(number -> Long.parseLong(number.trim()))
+                .toList();
         return new Problem(numbers, operation);
     }
 
