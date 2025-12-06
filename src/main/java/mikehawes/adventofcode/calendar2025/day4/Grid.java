@@ -1,6 +1,8 @@
 package mikehawes.adventofcode.calendar2025.day4;
 
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public record Grid(List<List<String>> rows) {
 
@@ -8,6 +10,29 @@ public record Grid(List<List<String>> rows) {
         return new Grid(input.lines()
                 .map(line -> List.of(line.split("")))
                 .toList());
+    }
+
+    public Stream<Position> removableRollPositions() {
+        return positions().filter(this::isRemovableRoll);
+    }
+
+    public Stream<Position> positions() {
+        return IntStream.range(0, height()).boxed()
+                .flatMap(y -> IntStream.range(0, width())
+                        .mapToObj(x -> new Position(x, y)));
+    }
+
+    public boolean isRemovableRoll(Position position) {
+        String cell = cell(position);
+        if (!"@".equals(cell)) {
+            return false;
+        }
+        long adjacentRolls = position.adjacentPositions()
+                .filter(p -> p.inGrid(this))
+                .map(this::cell)
+                .filter("@"::equals)
+                .count();
+        return adjacentRolls < 4;
     }
 
     public String cell(Position position) {
