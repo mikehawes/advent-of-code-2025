@@ -21,10 +21,7 @@ public class Day6Star1 {
                         .map(Long::parseLong)
                         .toList())
                 .toList();
-        String[] opStrings = lines.getLast().trim().split("\\s+");
-        List<Operation> operations = Arrays.stream(opStrings)
-                .map(Operation::from)
-                .toList();
+        List<Operation> operations = Operation.listFromLine(lines.getLast());
         return IntStream.range(0, data.getFirst().size())
                 .mapToObj(i -> Problem.from(i, data, operations.get(i)))
                 .mapToLong(Problem::calculate)
