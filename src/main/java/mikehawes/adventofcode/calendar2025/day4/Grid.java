@@ -1,6 +1,7 @@
 package mikehawes.adventofcode.calendar2025.day4;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -9,6 +10,21 @@ public record Grid(List<List<String>> rows) {
     public static Grid from(String input) {
         return new Grid(input.lines()
                 .map(line -> List.of(line.split("")))
+                .toList());
+    }
+
+    public Grid removeRolls(Set<Position> positions) {
+        return new Grid(IntStream.range(0, height()).boxed()
+                .map(y -> IntStream.range(0, width())
+                        .mapToObj(x -> new Position(x, y))
+                        .map(position -> {
+                            if(positions.contains(position)) {
+                                return ".";
+                            } else {
+                                return cell(position);
+                            }
+                        })
+                        .toList())
                 .toList());
     }
 
