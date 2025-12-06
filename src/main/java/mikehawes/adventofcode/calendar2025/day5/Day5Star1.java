@@ -19,26 +19,4 @@ public class Day5Star1 {
         return ids.stream().filter(ranges::isFresh).count();
     }
 
-    public record Range(long start, long end) {
-
-        public static Range from(String string) {
-            String[] parts = string.split("-");
-            return new Range(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
-        }
-
-        public boolean contains(long id) {
-            return id >= start && id <= end;
-        }
-    }
-
-    public record Ranges(List<Range> list) {
-
-        public static Ranges from(String string) {
-            return new Ranges(string.lines().map(Range::from).toList());
-        }
-
-        public boolean isFresh(long id) {
-            return list.stream().anyMatch(r -> r.contains(id));
-        }
-    }
 }
