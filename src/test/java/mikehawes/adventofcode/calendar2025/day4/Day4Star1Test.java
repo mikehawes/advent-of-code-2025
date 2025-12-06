@@ -21,6 +21,6 @@ public class Day4Star1Test {
                 @.@.@@@.@.
                 """;
         assertThat(Day4Star1.countReachableRolls(input))
-                .isEqualTo(71); // Should be 13
+                .isEqualTo(13);
     }
 }
