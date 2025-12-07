@@ -1,5 +1,8 @@
 package mikehawes.adventofcode.calendar2025.day7;
 
+import mikehawes.adventofcode.calendar2025.grid.Grid;
+import mikehawes.adventofcode.calendar2025.grid.Position;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +10,7 @@ public record Splitter(Position position, Splitter left, Splitter right, long pa
 
     public static Splitter read(Grid grid) {
         IO.println("Reading splitters...");
-        return read(grid, grid.findStart(), new HashMap<>());
+        return read(grid, Tachyon.findStart(grid), new HashMap<>());
     }
 
     private static Splitter read(Grid grid, Position position, Map<Position, Splitter> splitters) {

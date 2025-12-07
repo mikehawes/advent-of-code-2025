@@ -1,21 +1,21 @@
-package mikehawes.adventofcode.calendar2025.day7;
+package mikehawes.adventofcode.calendar2025.grid;
 
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public record Grid(List<List<String>> rows) {
+public class Grid {
+
+    private final List<List<String>> rows;
+
+    private Grid(List<List<String>> rows) {
+        this.rows = rows;
+    }
 
     public static Grid from(String input) {
         return new Grid(input.lines()
                 .map(line -> List.of(line.split("")))
                 .toList());
-    }
-
-    public Position findStart() {
-        return positions()
-                .filter(position -> "S".equals(cell(position)))
-                .findFirst().orElseThrow();
     }
 
     public Stream<Position> positions() {

@@ -1,5 +1,7 @@
 package mikehawes.adventofcode.calendar2025.day7;
 
+import mikehawes.adventofcode.calendar2025.grid.Grid;
+import mikehawes.adventofcode.calendar2025.grid.Position;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

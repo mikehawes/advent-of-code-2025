@@ -1,5 +1,7 @@
 package mikehawes.adventofcode.calendar2025.day7;
 
+import mikehawes.adventofcode.calendar2025.grid.Grid;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

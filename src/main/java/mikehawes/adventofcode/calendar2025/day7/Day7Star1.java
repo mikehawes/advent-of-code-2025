@@ -1,5 +1,8 @@
 package mikehawes.adventofcode.calendar2025.day7;
 
+import mikehawes.adventofcode.calendar2025.grid.Grid;
+import mikehawes.adventofcode.calendar2025.grid.Position;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +19,7 @@ public class Day7Star1 {
 
     public static long countBeamSplits(String input) {
         Grid grid = Grid.from(input);
-        Position start = grid.findStart();
+        Position start = Tachyon.findStart(grid);
         State state = new State(Set.of(start), 0);
         while (!state.positions().isEmpty()) {
             state = state.move(grid);
