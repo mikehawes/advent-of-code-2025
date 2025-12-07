@@ -9,7 +9,15 @@ public record Position(int x, int y) {
     }
 
     public List<Position> sides() {
-        return List.of(relative(-1, 0), relative(1, 0));
+        return List.of(left(), right());
+    }
+
+    public Position left() {
+        return relative(-1, 0);
+    }
+
+    public Position right() {
+        return relative(1, 0);
     }
 
     public Position relative(int x, int y) {
