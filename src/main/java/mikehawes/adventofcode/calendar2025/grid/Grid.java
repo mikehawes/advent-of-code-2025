@@ -1,6 +1,7 @@
 package mikehawes.adventofcode.calendar2025.grid;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -9,6 +10,15 @@ public record Grid(List<List<String>> rows) {
     public static Grid from(String input) {
         return new Grid(input.lines()
                 .map(line -> List.of(line.split("")))
+                .toList());
+    }
+
+    public Grid mapEachPosition(Function<Position, String> mapper) {
+        return new Grid(IntStream.range(0, height()).boxed()
+                .map(y -> IntStream.range(0, width())
+                        .mapToObj(x -> new Position(x, y))
+                        .map(mapper)
+                        .toList())
                 .toList());
     }
 

@@ -1,7 +1,6 @@
 package mikehawes.adventofcode.calendar2025.day4;
 
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import mikehawes.adventofcode.calendar2025.grid.Grid;
@@ -14,18 +13,13 @@ public record Room(Grid grid) {
     }
 
     public Room removeRolls(Set<Position> positions) {
-        return new Room(new Grid(IntStream.range(0, grid.height()).boxed()
-                .map(y -> IntStream.range(0, grid.width())
-                        .mapToObj(x -> new Position(x, y))
-                        .map(position -> {
+        return new Room(grid.mapEachPosition(position -> {
                             if(positions.contains(position)) {
                                 return ".";
                             } else {
                                 return grid.cell(position);
                             }
-                        })
-                        .toList())
-                .toList()));
+                        }));
     }
 
     public Stream<Position> removableRollPositions() {
