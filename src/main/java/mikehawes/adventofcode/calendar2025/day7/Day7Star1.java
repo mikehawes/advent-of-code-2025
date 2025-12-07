@@ -47,7 +47,7 @@ public class Day7Star1 {
         }
         String cell = grid.cell(below);
         if("^".equals(cell)) {
-            return below.sides().filter(grid::contains).toList();
+            return below.sides().stream().filter(grid::contains).toList();
         }
         return List.of(below);
     }
