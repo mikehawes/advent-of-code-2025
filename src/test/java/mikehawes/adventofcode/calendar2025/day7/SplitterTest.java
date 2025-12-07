@@ -42,19 +42,32 @@ public class SplitterTest {
                         end(new Position(3, 2))));
     }
 
+    @Test
+    void should_read_joined_splitter() {
+        String input = """
+                ..S..
+                ..^..
+                .^.^.
+                ..^..
+                """;
+        Splitter found = read(input);
+        assertThat(found.left().right())
+                .isSameAs(found.right().left());
+    }
+
     private static Splitter read(String input) {
         return Splitter.read(Grid.from(input));
     }
 
     private static Splitter leftOnly(Position position, Splitter left) {
-        return new Splitter(position, left, null);
+        return new Splitter(position, left, null, left.paths() + 1);
     }
 
     private static Splitter leftAndRight(Position position, Splitter left, Splitter right) {
-        return new Splitter(position, left, right);
+        return new Splitter(position, left, right, left.paths() + right.paths());
     }
 
     private static Splitter end(Position position) {
-        return new Splitter(position, null, null);
+        return new Splitter(position, null, null, 2);
     }
 }

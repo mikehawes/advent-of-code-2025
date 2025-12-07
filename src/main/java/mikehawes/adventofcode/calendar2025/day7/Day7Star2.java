@@ -14,6 +14,6 @@ public class Day7Star2 {
     public static long countTachyonPaths(String input) {
         Grid grid = Grid.from(input);
         Splitter splits = Splitter.read(grid);
-        return splits.countPaths();
+        return splits.paths();
     }
 }
