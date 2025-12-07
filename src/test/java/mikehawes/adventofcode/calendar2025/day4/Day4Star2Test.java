@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Day4Star2Test {
 
     @Test
-    void should_count_removeable_rolls() {
+    void should_count_removable_rolls() {
         String input = """
                 ..@@.@@@@.
                 @@@.@.@.@@

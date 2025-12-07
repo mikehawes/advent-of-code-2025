@@ -4,13 +4,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Grid {
-
-    private final List<List<String>> rows;
-
-    private Grid(List<List<String>> rows) {
-        this.rows = rows;
-    }
+public record Grid(List<List<String>> rows) {
 
     public static Grid from(String input) {
         return new Grid(input.lines()

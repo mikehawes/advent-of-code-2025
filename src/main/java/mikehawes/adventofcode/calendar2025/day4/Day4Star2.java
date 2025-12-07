@@ -1,5 +1,7 @@
 package mikehawes.adventofcode.calendar2025.day4;
 
+import mikehawes.adventofcode.calendar2025.grid.Position;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,13 +16,13 @@ public class Day4Star2 {
     }
 
     public static long countRemoveableRolls(String input) {
-        Grid grid = Grid.from(input);
-        Set<Position> removeable = grid.removableRollPositions().collect(Collectors.toSet());
+        Room room = Room.from(input);
+        Set<Position> removeable = room.removableRollPositions().collect(Collectors.toSet());
         long removedRolls = 0;
         while (!removeable.isEmpty()) {
-            grid = grid.removeRolls(removeable);
+            room = room.removeRolls(removeable);
             removedRolls += removeable.size();
-            removeable = grid.removableRollPositions().collect(Collectors.toSet());
+            removeable = room.removableRollPositions().collect(Collectors.toSet());
         }
         return removedRolls;
     }

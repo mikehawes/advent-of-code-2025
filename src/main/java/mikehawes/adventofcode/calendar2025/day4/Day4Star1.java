@@ -12,6 +12,6 @@ public class Day4Star1 {
     }
 
     public static long countReachableRolls(String input) {
-        return Grid.from(input).removableRollPositions().count();
+        return Room.from(input).removableRollPositions().count();
     }
 }
