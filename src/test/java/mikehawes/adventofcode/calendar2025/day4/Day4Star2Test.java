@@ -20,7 +20,7 @@ public class Day4Star2Test {
                 .@@@@@@@@.
                 @.@.@@@.@.
                 """;
-        assertThat(Day4Star2.countRemoveableRolls(input))
+        assertThat(Day4Star2.countRemovableRolls(input))
                 .isEqualTo(43);
     }
 }

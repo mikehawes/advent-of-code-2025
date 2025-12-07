@@ -12,10 +12,10 @@ public class Day4Star2 {
 
     static void main() throws IOException {
         String input = Files.readString(Path.of("input/day4.txt"));
-        IO.println("Removeable paper rolls: " + countRemoveableRolls(input));
+        IO.println("Removable paper rolls: " + countRemovableRolls(input));
     }
 
-    public static long countRemoveableRolls(String input) {
+    public static long countRemovableRolls(String input) {
         Room room = Room.from(input);
         Set<Position> removeable = room.removableRollPositions().collect(Collectors.toSet());
         long removedRolls = 0;
