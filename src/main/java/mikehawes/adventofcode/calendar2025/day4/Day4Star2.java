@@ -17,12 +17,12 @@ public class Day4Star2 {
 
     public static long countRemovableRolls(String input) {
         Room room = Room.from(input);
-        Set<Position> removeable = room.removableRollPositions().collect(Collectors.toSet());
+        Set<Position> removable = room.removableRollPositions().collect(Collectors.toSet());
         long removedRolls = 0;
-        while (!removeable.isEmpty()) {
-            room = room.removeRolls(removeable);
-            removedRolls += removeable.size();
-            removeable = room.removableRollPositions().collect(Collectors.toSet());
+        while (!removable.isEmpty()) {
+            room = room.removeRolls(removable);
+            removedRolls += removable.size();
+            removable = room.removableRollPositions().collect(Collectors.toSet());
         }
         return removedRolls;
     }
