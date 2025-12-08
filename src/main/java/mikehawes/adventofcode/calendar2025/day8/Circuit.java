@@ -7,7 +7,16 @@ public record Circuit(Set<Point> boxes, List<Connection> connections) {
     public static Map<Point, Circuit> indexCircuits(List<Point> boxes, List<Connection> connections) {
         Map<Point, Circuit> circuits = new HashMap<>();
         for (Connection connection : connections) {
-            Circuit circuit = empty();
+            Circuit fromCircuit = circuits.get(connection.from());
+            Circuit toCircuit = circuits.get(connection.to());
+            Circuit circuit;
+            if (fromCircuit != null) {
+                circuit = fromCircuit;
+            } else if (toCircuit != null) {
+                circuit = toCircuit;
+            } else {
+                circuit = create();
+            }
             circuit.add(connection);
             circuits.put(connection.from(), circuit);
             circuits.put(connection.to(), circuit);
@@ -21,18 +30,19 @@ public record Circuit(Set<Point> boxes, List<Connection> connections) {
     }
 
     public static Circuit singleBox(Point box) {
-        Circuit circuit = empty();
+        Circuit circuit = create();
         circuit.boxes.add(box);
         return circuit;
     }
 
-    private static Circuit empty() {
+    public static Circuit create() {
         return new Circuit(new HashSet<>(), new ArrayList<>());
     }
 
-    public void add(Connection connection) {
+    public Circuit add(Connection connection) {
         boxes.add(connection.from());
         boxes.add(connection.to());
         connections.add(connection);
+        return this;
     }
 }
