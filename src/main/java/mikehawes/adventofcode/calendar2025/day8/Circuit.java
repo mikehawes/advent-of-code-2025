@@ -39,6 +39,10 @@ public record Circuit(Set<Point> boxes, List<Connection> connections) {
         return boxes.isEmpty();
     }
 
+    public int size() {
+        return boxes.size();
+    }
+
     public void consume(Circuit other) {
         other.connections.forEach(this::add);
         other.clear();

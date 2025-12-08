@@ -30,7 +30,7 @@ public class Day8Star1Test {
                 984,92,344
                 425,690,689
                 """;
-        assertThat(Day8Star1.joinBoxesMultiplyLargestCircuitLengths(input, 10, 3))
-                .isEqualTo(0); // Should be 40
+        assertThat(Day8Star1.joinBoxesMultiplyLargestCircuits(input, 10, 3))
+                .isEqualTo(40);
     }
 }
