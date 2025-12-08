@@ -6,8 +6,16 @@ public record Circuit(Set<Point> boxes, List<Connection> connections) {
 
     public static Map<Point, Circuit> indexCircuits(List<Point> boxes, List<Connection> connections) {
         Map<Point, Circuit> circuits = new HashMap<>();
-        for(Point box : boxes) {
-            circuits.put(box, singleBox(box));
+        for (Connection connection : connections) {
+            Circuit circuit = empty();
+            circuit.add(connection);
+            circuits.put(connection.from(), circuit);
+            circuits.put(connection.to(), circuit);
+        }
+        for (Point box : boxes) {
+            if (!circuits.containsKey(box)) {
+                circuits.put(box, singleBox(box));
+            }
         }
         return circuits;
     }

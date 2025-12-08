@@ -7,6 +7,10 @@ import java.util.PriorityQueue;
 
 public record Connection(Point from, Point to, double distance) {
 
+    public static Connection create(Point from, Point to) {
+        return new Connection(from, to, from.findDistanceTo(to));
+    }
+
     public static List<Connection> findShortest(int limit, List<Point> points) {
         PriorityQueue<Connection> connections = new PriorityQueue<>(
                 Comparator.comparing(Connection::distance).reversed());
@@ -14,8 +18,7 @@ public record Connection(Point from, Point to, double distance) {
             Point from = points.get(i);
             for (int j = i + 1; j < points.size(); j++) {
                 Point to = points.get(j);
-                double distance = from.findDistanceTo(to);
-                connections.add(new Connection(from, to, distance));
+                connections.add(create(from, to));
                 if(connections.size() > limit) {
                     connections.poll();
                 }
