@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public record Connection(Point from, Point to, double distance) {
 
@@ -11,17 +13,13 @@ public record Connection(Point from, Point to, double distance) {
         return new Connection(from, to, from.findDistanceTo(to));
     }
 
-    public static List<Connection> findShortest(int limit, List<Point> points) {
+    public static List<Connection> findShortest(int limit, List<Point> boxes) {
         PriorityQueue<Connection> connections = new PriorityQueue<>(
                 Comparator.comparing(Connection::distance).reversed());
-        for (int i = 0; i < points.size(); i++) {
-            Point from = points.get(i);
-            for (int j = i + 1; j < points.size(); j++) {
-                Point to = points.get(j);
-                connections.add(create(from, to));
-                if(connections.size() > limit) {
-                    connections.poll();
-                }
+        for (Connection connection : (Iterable<Connection>) () -> streamAll(boxes).iterator()) {
+            connections.add(connection);
+            if(connections.size() > limit) {
+                connections.poll();
             }
         }
         List<Connection> order = new ArrayList<>(connections.size());
@@ -29,5 +27,17 @@ public record Connection(Point from, Point to, double distance) {
             order.add(connection);
         }
         return order.reversed();
+    }
+
+    public static Stream<Connection> streamAll(List<Point> boxes) {
+        return IntStream.range(0, boxes.size()).boxed()
+                .flatMap(i -> {
+                    Point from = boxes.get(i);
+                    return IntStream.range(i + 1, boxes.size())
+                            .mapToObj(j -> {
+                                Point to = boxes.get(j);
+                                return create(from, to);
+                            });
+                });
     }
 }
