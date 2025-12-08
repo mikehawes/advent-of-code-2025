@@ -1,54 +1,71 @@
 package mikehawes.adventofcode.calendar2025.day8;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public record CircuitIndex(Map<Point, Circuit> boxToCircuit, List<Circuit> circuits) {
+public class CircuitIndex {
+
+    private final Map<Point, Long> boxToCircuitId = new HashMap<>();
+    private final Map<Long, Circuit> idToCircuit = new HashMap<>();
+    private long nextId = 0;
 
     public static CircuitIndex createEmpty() {
-        return new CircuitIndex(new HashMap<>(), new ArrayList<>());
+        return new CircuitIndex();
+    }
+
+    public Collection<Circuit> circuits() {
+        return idToCircuit.values();
     }
 
     public void add(Connection connection) {
-        Circuit fromCircuit = boxToCircuit.get(connection.from());
-        Circuit toCircuit = boxToCircuit.get(connection.to());
-        if (fromCircuit != null) {
-            if (toCircuit != null) {
-                Circuit circuit = add(Circuit.createEmpty());
-                circuit.consume(fromCircuit);
-                circuit.consume(toCircuit);
-                addAndApplyMerge(connection, circuit);
+        Long fromId = boxToCircuitId.get(connection.from());
+        Long toId = boxToCircuitId.get(connection.to());
+        if (fromId != null) {
+            if (toId != null) {
+                Circuit circuit = Circuit.createEmpty();
+                long id = add(circuit);
+                merge(fromId, circuit, id);
+                merge(toId, circuit, id);
+                addToCircuit(connection, circuit, id);
             } else {
-                addToCircuit(connection, fromCircuit);
+                addToCircuit(connection, idToCircuit.get(fromId), fromId);
             }
-        } else if (toCircuit != null) {
-            addToCircuit(connection, toCircuit);
+        } else if (toId != null) {
+            addToCircuit(connection, idToCircuit.get(toId), toId);
         } else {
-            addToCircuit(connection, add(Circuit.createEmpty()));
+            Circuit circuit = Circuit.createEmpty();
+            long id = add(circuit);
+            addToCircuit(connection, circuit, id);
         }
+    }
+
+    private void merge(long oldId, Circuit newCircuit, long newId) {
+        Circuit oldCircuit = idToCircuit.remove(oldId);
+        if (oldCircuit == null) {
+            // From and to circuit are the same
+            return;
+        }
+        oldCircuit.connections().forEach(newCircuit::add);
+        oldCircuit.boxes().forEach(box -> boxToCircuitId.put(box, newId));
     }
 
     public void add(Point box) {
-        if (!boxToCircuit.containsKey(box)) {
-            boxToCircuit.put(box, add(Circuit.singleBox(box)));
+        if (!boxToCircuitId.containsKey(box)) {
+            boxToCircuitId.put(box, add(Circuit.singleBox(box)));
         }
     }
 
-    private void addAndApplyMerge(Connection connection, Circuit circuit) {
-        circuit.boxes().forEach(box -> boxToCircuit.put(box, circuit));
-        addToCircuit(connection, circuit);
-    }
-
-    private void addToCircuit(Connection connection, Circuit circuit) {
+    private void addToCircuit(Connection connection, Circuit circuit, long id) {
         circuit.add(connection);
-        boxToCircuit.put(connection.from(), circuit);
-        boxToCircuit.put(connection.to(), circuit);
+        boxToCircuitId.put(connection.from(), id);
+        boxToCircuitId.put(connection.to(), id);
     }
 
-    private Circuit add(Circuit circuit) {
-        circuits.add(circuit);
-        return circuit;
+    private long add(Circuit circuit) {
+        long id = nextId;
+        idToCircuit.put(id, circuit);
+        nextId++;
+        return id;
     }
 }
