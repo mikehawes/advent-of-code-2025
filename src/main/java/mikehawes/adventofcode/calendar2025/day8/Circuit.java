@@ -4,11 +4,12 @@ import java.util.*;
 
 public record Circuit(Set<Point> boxes, List<Connection> connections) {
 
-    public static Map<Point, Circuit> indexCircuits(List<Point> boxes, List<Connection> connections) {
-        Map<Point, Circuit> circuits = new HashMap<>();
+    public static List<Circuit> listFrom(List<Point> boxes, List<Connection> connections) {
+        Map<Point, Circuit> index = new HashMap<>();
+        List<Circuit> circuits = new ArrayList<>();
         for (Connection connection : connections) {
-            Circuit fromCircuit = circuits.get(connection.from());
-            Circuit toCircuit = circuits.get(connection.to());
+            Circuit fromCircuit = index.get(connection.from());
+            Circuit toCircuit = index.get(connection.to());
             Circuit circuit;
             if (fromCircuit != null) {
                 circuit = fromCircuit;
@@ -16,14 +17,15 @@ public record Circuit(Set<Point> boxes, List<Connection> connections) {
                 circuit = toCircuit;
             } else {
                 circuit = create();
+                circuits.add(circuit);
             }
             circuit.add(connection);
-            circuits.put(connection.from(), circuit);
-            circuits.put(connection.to(), circuit);
+            index.put(connection.from(), circuit);
+            index.put(connection.to(), circuit);
         }
         for (Point box : boxes) {
-            if (!circuits.containsKey(box)) {
-                circuits.put(box, singleBox(box));
+            if (!index.containsKey(box)) {
+                circuits.add(singleBox(box));
             }
         }
         return circuits;
