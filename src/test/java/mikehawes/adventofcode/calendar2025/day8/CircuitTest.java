@@ -42,7 +42,7 @@ public class CircuitTest {
         Point box1 = new Point(1, 0, 0);
         Point box2 = new Point(2, 0, 0);
         assertThat(Circuit.listFrom(
-                List.of(box0, box1),
+                List.of(box0, box1, box2),
                 List.of(Connection.create(box0, box1),
                         Connection.create(box1, box2))))
                 .containsExactly(circuit(
@@ -56,12 +56,29 @@ public class CircuitTest {
         Point box1 = new Point(1, 0, 0);
         Point box2 = new Point(2, 0, 0);
         assertThat(Circuit.listFrom(
-                List.of(box0, box1),
+                List.of(box0, box1, box2),
                 List.of(Connection.create(box0, box1),
                         Connection.create(box2, box1))))
                 .containsExactly(circuit(
                         Connection.create(box0, box1),
                         Connection.create(box2, box1)));
+    }
+
+    @Test
+    void should_merge_circuits() {
+        Point box0 = new Point(0, 0, 0);
+        Point box1 = new Point(1, 0, 0);
+        Point box2 = new Point(2, 0, 0);
+        Point box3 = new Point(3, 0, 0);
+        assertThat(Circuit.listFrom(
+                List.of(box0, box1, box2, box3),
+                List.of(Connection.create(box0, box1),
+                        Connection.create(box2, box3),
+                        Connection.create(box1, box2))))
+                .containsExactly(circuit(
+                        Connection.create(box0, box1),
+                        Connection.create(box2, box3),
+                        Connection.create(box1, box2)));
     }
 
     private static Circuit circuit(Point box) {
