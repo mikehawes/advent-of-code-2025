@@ -27,6 +27,14 @@ public record Floor(List<Long> xValues, List<Long> yValues, List<Position> tiles
         return new Floor(xValues, yValues, mappedTiles);
     }
 
+    public long mapX(int x) {
+        return xValues.get(x);
+    }
+
+    public long mapY(int y) {
+        return yValues.get(y);
+    }
+
     public FloorGrid buildGrid() {
         MutableGrid grid = MutableGrid.create(".", xValues.size(), yValues.size());
         for (int i = 0; i < tiles.size(); i++) {
