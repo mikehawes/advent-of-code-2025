@@ -9,7 +9,10 @@ import java.util.stream.IntStream;
 
 public record FloorGrid(Floor floor, Grid grid) {
 
-    private static final Pattern TOP_LINE = Pattern.compile("");
+    private static final Pattern TOP_LINE = Pattern.compile("(\\.|X|═|═╝|╚═|╚═*╝)*");
+    private static final Pattern BOTTOM_LINE = Pattern.compile("(\\.|X|═|═╗|╔═|╔═*╗)*");
+    private static final Pattern LEFT_LINE = Pattern.compile("(\\.|X|║|║╝|╗║|╗║*╝)*");
+    private static final Pattern RIGHT_LINE = Pattern.compile("(\\.|X|║|║╚|╔║|╔║*╚)*");
 
     public long findLargestRectangleArea() {
         long maxArea = 0;
@@ -28,14 +31,26 @@ public record FloorGrid(Floor floor, Grid grid) {
                 if (area <= maxArea) {
                     continue;
                 }
-                String topLine = String.join("", grid.rows().get(minY).subList(minX, maxX + 1));
-                String bottomLine = String.join("", grid.rows().get(maxY).subList(minX, maxX + 1));
-                String leftLine = IntStream.rangeClosed(minY, maxY)
+                String topLine = String.join("", grid.rows().get(minY).subList(minX + 1, maxX));
+                if (!TOP_LINE.matcher(topLine).matches()) {
+                    continue;
+                }
+                String bottomLine = String.join("", grid.rows().get(maxY).subList(minX + 1, maxX));
+                if (!BOTTOM_LINE.matcher(bottomLine).matches()) {
+                    continue;
+                }
+                String leftLine = IntStream.range(minY + 1, maxY)
                         .mapToObj(y -> grid.rows().get(y).get(minX))
                         .collect(Collectors.joining());
-                String rightLine = IntStream.rangeClosed(minY, maxY)
+                if (!LEFT_LINE.matcher(leftLine).matches()) {
+                    continue;
+                }
+                String rightLine = IntStream.range(minY + 1, maxY)
                         .mapToObj(y -> grid.rows().get(y).get(maxX))
                         .collect(Collectors.joining());
+                if (!RIGHT_LINE.matcher(rightLine).matches()) {
+                    continue;
+                }
                 maxArea = area;
             }
         }

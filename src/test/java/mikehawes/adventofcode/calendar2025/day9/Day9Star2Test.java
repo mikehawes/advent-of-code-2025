@@ -19,6 +19,6 @@ public class Day9Star2Test {
                 7,3
                 """;
         assertThat(Day9Star2.largestRectangleArea(input))
-                .isEqualTo(50); // Should be 24
+                .isEqualTo(24);
     }
 }
