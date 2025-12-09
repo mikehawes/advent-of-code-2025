@@ -1,11 +1,14 @@
 package mikehawes.adventofcode.calendar2025.day9;
 
+import mikehawes.adventofcode.calendar2025.grid.Grid;
 import mikehawes.adventofcode.calendar2025.grid.MutableGrid;
 import mikehawes.adventofcode.calendar2025.grid.Position;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,7 +33,32 @@ public record Floor(List<Long> xValues, List<Long> yValues, List<Position> tiles
             renderTile(i, grid);
             renderLine(i, grid);
         }
+        Grid view = grid.view();
+        List<String> lines = view.rows().stream()
+                .map(row -> String.join("", row))
+                .toList();
+        view.positions().forEach(position -> {
+            if (view.cell(position).equals(".") && isInternal(position, lines)) {
+                grid.set(position, "X");
+            }
+        });
         return grid;
+    }
+
+    private static boolean isInternal(Position tile, List<String> lines) {
+        String line = lines.get(tile.y()).substring(tile.x());
+        return countBoundaryCrossings(line) % 2 == 1;
+    }
+
+    private static final Pattern LINE_CROSS = Pattern.compile("║|╔═*╝|╚═*╗");
+
+    private static int countBoundaryCrossings(String line) {
+        Matcher matcher = LINE_CROSS.matcher(line);
+        int crossings = 0;
+        while (matcher.find()) {
+            crossings++;
+        }
+        return crossings;
     }
 
     private void renderTile(int index, MutableGrid grid) {

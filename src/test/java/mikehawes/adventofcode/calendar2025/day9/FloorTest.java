@@ -25,7 +25,7 @@ public class FloorTest {
         assertThat(floor.buildGrid().print())
                 .isEqualTo("""
                         .╔═╗
-                        ╔╝.║
+                        ╔╝X║
                         ╚═╗║
                         ..╚╝""");
     }
