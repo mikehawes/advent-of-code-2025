@@ -2,6 +2,7 @@ package mikehawes.adventofcode.calendar2025.grid;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -10,6 +11,14 @@ public record Grid(List<List<String>> rows) {
     public static Grid from(String input) {
         return new Grid(input.lines()
                 .map(line -> List.of(line.split("")))
+                .toList());
+    }
+
+    public static Grid create(String cell, int width, int height) {
+        return new Grid(IntStream.range(0, height)
+                .mapToObj(_ -> IntStream.range(0, width)
+                        .mapToObj(_ -> cell)
+                        .toList())
                 .toList());
     }
 
@@ -44,5 +53,11 @@ public record Grid(List<List<String>> rows) {
 
     public int height() {
         return rows.size();
+    }
+
+    public String print() {
+        return rows.stream()
+                .map(row -> String.join("", row))
+                .collect(Collectors.joining("\n"));
     }
 }
