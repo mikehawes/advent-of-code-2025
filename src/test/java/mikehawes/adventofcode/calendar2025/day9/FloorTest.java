@@ -1,9 +1,10 @@
 package mikehawes.adventofcode.calendar2025.day9;
 
-import org.approvaltests.Approvals;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FloorTest {
 
@@ -21,6 +22,11 @@ public class FloorTest {
                 """;
         List<Tile> tiles = Tile.listFrom(input);
         Floor floor = Floor.from(tiles);
-        Approvals.verify(floor.print());
+        assertThat(floor.print())
+                .isEqualTo("""
+                        .#.#
+                        ##..
+                        #.#.
+                        ..##""");
     }
 }
