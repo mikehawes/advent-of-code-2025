@@ -11,7 +11,7 @@ public class Day9Star2 {
         String input = Files.readString(Path.of("input/day9.txt"));
         List<Tile> tiles = Tile.listFrom(input);
         Floor floor = Floor.from(tiles);
-        IO.println(floor.print());
+        IO.println(floor.buildGrid().print());
     }
 
 }

@@ -14,14 +14,6 @@ public record Grid(List<List<String>> rows) {
                 .toList());
     }
 
-    public static Grid create(String cell, int width, int height) {
-        return new Grid(IntStream.range(0, height)
-                .mapToObj(_ -> IntStream.range(0, width)
-                        .mapToObj(_ -> cell)
-                        .toList())
-                .toList());
-    }
-
     public Grid mapEachPosition(Function<Position, String> mapper) {
         return new Grid(IntStream.range(0, height()).boxed()
                 .map(y -> IntStream.range(0, width())

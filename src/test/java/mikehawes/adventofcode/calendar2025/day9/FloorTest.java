@@ -22,11 +22,11 @@ public class FloorTest {
                 """;
         List<Tile> tiles = Tile.listFrom(input);
         Floor floor = Floor.from(tiles);
-        assertThat(floor.print())
+        assertThat(floor.buildGrid().print())
                 .isEqualTo("""
-                        .#.#
-                        ##..
-                        #.#.
-                        ..##""");
+                        .╔═╗
+                        ╔╝.║
+                        ╚═╗║
+                        ..╚╝""");
     }
 }
