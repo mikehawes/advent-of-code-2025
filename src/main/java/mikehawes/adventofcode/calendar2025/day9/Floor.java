@@ -27,7 +27,7 @@ public record Floor(List<Long> xValues, List<Long> yValues, List<Position> tiles
         return new Floor(xValues, yValues, mappedTiles);
     }
 
-    public MutableGrid buildGrid() {
+    public FloorGrid buildGrid() {
         MutableGrid grid = MutableGrid.create(".", xValues.size(), yValues.size());
         for (int i = 0; i < tiles.size(); i++) {
             renderTile(i, grid);
@@ -42,7 +42,7 @@ public record Floor(List<Long> xValues, List<Long> yValues, List<Position> tiles
                 grid.set(position, "X");
             }
         });
-        return grid;
+        return new FloorGrid(this, view);
     }
 
     private static boolean isInternal(Position tile, List<String> lines) {

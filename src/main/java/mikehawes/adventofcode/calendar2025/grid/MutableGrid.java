@@ -21,8 +21,4 @@ public record MutableGrid(List<List<String>> rows) {
     public Grid view() {
         return new Grid(rows);
     }
-
-    public String print() {
-        return view().print();
-    }
 }
