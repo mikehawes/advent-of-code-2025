@@ -2,6 +2,7 @@ package mikehawes.adventofcode.calendar2025.day10;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record Button(List<Integer> lightIndexes) {
@@ -20,5 +21,10 @@ public record Button(List<Integer> lightIndexes) {
             isOn.set(index, !isOn.get(index));
         }
         return new IndicatorLights(isOn);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + lightIndexes.stream().map(i -> "" + i).collect(Collectors.joining(",")) + ")";
     }
 }

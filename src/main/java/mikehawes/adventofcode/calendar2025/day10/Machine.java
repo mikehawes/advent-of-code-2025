@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public record Machine(IndicatorLights lightsTarget, List<Button> buttons) {
     public static Machine from(String input) {
@@ -22,6 +23,11 @@ public record Machine(IndicatorLights lightsTarget, List<Button> buttons) {
         lightsToState.put(start.lights(), start);
         setButtonPushes(start, lightsToState);
         return start;
+    }
+
+    @Override
+    public String toString() {
+        return lightsTarget + " " + buttons.stream().map(Button::toString).collect(Collectors.joining(" "));
     }
 
     private void setButtonPushes(State state, Map<IndicatorLights, State> lightsToState) {
