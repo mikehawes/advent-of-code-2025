@@ -1,5 +1,6 @@
 package mikehawes.adventofcode.calendar2025.day10;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -11,5 +12,13 @@ public record Button(List<Integer> lightIndexes) {
                 .map(Integer::parseInt)
                 .toList();
         return new Button(lightIndexes);
+    }
+
+    public IndicatorLights press(IndicatorLights lights) {
+        List<Boolean> isOn = new ArrayList<>(lights.isOn());
+        for (int index : lightIndexes) {
+            isOn.set(index, !isOn.get(index));
+        }
+        return new IndicatorLights(isOn);
     }
 }
