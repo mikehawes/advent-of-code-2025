@@ -16,7 +16,8 @@ public record Machine(IndicatorLights lightsTarget, List<Button> buttons) {
     }
 
     public State mapStateMachine() {
-        State start = initialState();
+        IO.println("Mapping state machine...");
+        State start = initState(IndicatorLights.allOff(lightsTarget.numberOfLights()));
         Map<IndicatorLights, State> lightsToState = new HashMap<>();
         lightsToState.put(start.lights(), start);
         setButtonPushes(start, lightsToState);
@@ -37,10 +38,6 @@ public record Machine(IndicatorLights lightsTarget, List<Button> buttons) {
         for (State newState : newStates) {
             setButtonPushes(newState, lightsToState);
         }
-    }
-
-    private State initialState() {
-        return initState(IndicatorLights.allOff(lightsTarget.numberOfLights()));
     }
 
     private State initState(IndicatorLights lights) {
