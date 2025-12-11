@@ -29,4 +29,10 @@ public class MachineTest {
         String input = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}";
         Approvals.verify(StateMachineNode.mapLightsFrom(Machine.from(input)));
     }
+
+    @Test
+    void should_map_joltages_state_machine() {
+        String input = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}";
+        Approvals.verify(StateMachineNode.mapJoltagesFrom(Machine.from(input)));
+    }
 }

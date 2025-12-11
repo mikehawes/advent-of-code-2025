@@ -5,51 +5,67 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public record StateMachineNode<T>(T state, List<StateMachineNode<T>> buttonPushes) {
 
     public static StateMachineNode<IndicatorLights> mapLightsFrom(Machine machine) {
-        return mapFrom(machine, IndicatorLights.allOff(machine), Button::press);
+        return mapFrom(machine, IndicatorLights.allOff(machine), Button::press, _ -> true);
     }
 
-    public static <T> StateMachineNode<T> mapFrom(Machine machine, T initialState, BiFunction<Button, T, T> pressButton) {
+    public static StateMachineNode<Joltages> mapJoltagesFrom(Machine machine) {
+        return mapFrom(machine, Joltages.allZero(machine), Button::press, joltages -> joltages.allEqualOrBelow(machine.joltagesTarget()));
+    }
+
+    public static <T> StateMachineNode<T> mapFrom(Machine machine, T initialState, BiFunction<Button, T, T> pressButton, Predicate<T> continueMapping) {
         IO.println("Machine: " + machine);
         IO.println("Mapping state machine...");
         StateMachineNode<T> start = initState(machine, initialState);
         Map<T, StateMachineNode<T>> stateToNode = new HashMap<>();
         stateToNode.put(start.state(), start);
-        start.setButtonPushes(machine, stateToNode, pressButton);
+        start.setButtonPushes(machine, stateToNode, pressButton, continueMapping);
         return start;
     }
 
     public int fewestButtonPresses(T target) {
         IO.println("Finding fewest button presses...");
-        Map<T, Integer> lightsToPresses = new HashMap<>();
-        lightsToPresses.put(state, 0);
+        Map<T, Integer> stateToPresses = new HashMap<>();
+        stateToPresses.put(state, 0);
         PriorityQueue<StateAndPresses<T>> queue = new PriorityQueue<>(Comparator.comparing(StateAndPresses::presses));
-        queue.add(new StateAndPresses<>(this, 0));
+        queue.add(new StateAndPresses<>(null, 0, this, 0));
         while (!queue.isEmpty()) {
             StateAndPresses<T> state = queue.poll();
             int nextPresses = state.presses() + 1;
-            for (StateMachineNode<T> pushed : state.buttonPushes()) {
+            for (int i = 0; i < state.buttonPushes().size(); i++) {
+                StateMachineNode<T> pushed = state.buttonPushes().get(i);
                 if (pushed.state().equals(target)) {
-                    IO.println("Found " + nextPresses);
+                    IO.println("Found " + nextPresses + " presses: " + new StateAndPresses<>(state, i, pushed, nextPresses));
                     return nextPresses;
                 }
-                int lastPresses = lightsToPresses.getOrDefault(pushed.state(), Integer.MAX_VALUE);
+                int lastPresses = stateToPresses.getOrDefault(pushed.state(), Integer.MAX_VALUE);
                 if (nextPresses < lastPresses) {
-                    lightsToPresses.put(pushed.state(), nextPresses);
-                    queue.add(new StateAndPresses<>(pushed, nextPresses));
+                    stateToPresses.put(pushed.state(), nextPresses);
+                    queue.add(new StateAndPresses<>(state, i, pushed, nextPresses));
                 }
             }
         }
         throw new IllegalArgumentException("No route to target found");
     }
 
-    private record StateAndPresses<T>(StateMachineNode<T> state, int presses) {
+    private record StateAndPresses<T>(StateAndPresses<T> prev, int push, StateMachineNode<T> node, int presses) {
 
         List<StateMachineNode<T>> buttonPushes() {
-            return state.buttonPushes();
+            return node.buttonPushes();
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder out = new StringBuilder();
+            if (prev != null) {
+                out.append(prev).append(" push ").append(push).append(", ");
+            }
+            out.append(node.state());
+            return out.toString();
         }
     }
 
@@ -57,19 +73,22 @@ public record StateMachineNode<T>(T state, List<StateMachineNode<T>> buttonPushe
         return new StateMachineNode<>(state, new ArrayList<>(machine.buttons().size()));
     }
 
-    private void setButtonPushes(Machine machine, Map<T, StateMachineNode<T>> stateToNode, BiFunction<Button, T, T> pressButton) {
+    private void setButtonPushes(Machine machine, Map<T, StateMachineNode<T>> stateToNode,
+                                 BiFunction<Button, T, T> pressButton, Predicate<T> continueMapping) {
         List<StateMachineNode<T>> newNodes = new ArrayList<>(machine.buttons().size());
         for (Button button : machine.buttons()) {
             T after = pressButton.apply(button, state);
             StateMachineNode<T> afterNode = stateToNode.computeIfAbsent(after, state -> {
                 StateMachineNode<T> newNode = initState(machine, state);
-                newNodes.add(newNode);
+                if (continueMapping.test(state)) {
+                    newNodes.add(newNode);
+                }
                 return newNode;
             });
             buttonPushes.add(afterNode);
         }
         for (StateMachineNode<T> newNode : newNodes) {
-            newNode.setButtonPushes(machine, stateToNode, pressButton);
+            newNode.setButtonPushes(machine, stateToNode, pressButton, continueMapping);
         }
     }
 
