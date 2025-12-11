@@ -21,7 +21,7 @@ public class Day10Star1 {
 
     private static int fewestButtonPresses(Machine machine) {
         IO.println("Machine: " + machine);
-        LightsState start = machine.mapLightsStateMachine();
+        LightsState start = LightsState.mapFrom(machine);
         IO.println("Finding fewest button presses...");
         Map<IndicatorLights, Integer> lightsToPresses = new HashMap<>();
         lightsToPresses.put(start.lights(), 0);

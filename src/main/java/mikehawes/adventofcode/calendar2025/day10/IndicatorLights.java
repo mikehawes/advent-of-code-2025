@@ -12,8 +12,8 @@ public record IndicatorLights(List<Boolean> isOn) {
         return new IndicatorLights(isOn);
     }
 
-    public static IndicatorLights allOff(int numberOfLights) {
-        return new IndicatorLights(IntStream.range(0, numberOfLights).mapToObj(_ -> false).toList());
+    public static IndicatorLights allOff(Machine machine) {
+        return new IndicatorLights(IntStream.range(0, machine.lightsTarget().numberOfLights()).mapToObj(_ -> false).toList());
     }
 
     public int numberOfLights() {
