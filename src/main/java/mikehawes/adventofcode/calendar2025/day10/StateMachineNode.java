@@ -29,44 +29,7 @@ public record StateMachineNode<T>(T state, List<StateMachineNode<T>> buttonPushe
 
     public int fewestButtonPresses(T target) {
         IO.println("Finding fewest button presses...");
-        Map<T, Integer> stateToPresses = new HashMap<>();
-        stateToPresses.put(state, 0);
-        PriorityQueue<StateAndPresses<T>> queue = new PriorityQueue<>(Comparator.comparing(StateAndPresses::presses));
-        queue.add(new StateAndPresses<>(null, 0, this, 0));
-        while (!queue.isEmpty()) {
-            StateAndPresses<T> state = queue.poll();
-            int nextPresses = state.presses() + 1;
-            for (int i = 0; i < state.buttonPushes().size(); i++) {
-                StateMachineNode<T> pushed = state.buttonPushes().get(i);
-                if (pushed.state().equals(target)) {
-                    IO.println("Found " + nextPresses + " presses: " + new StateAndPresses<>(state, i, pushed, nextPresses));
-                    return nextPresses;
-                }
-                int lastPresses = stateToPresses.getOrDefault(pushed.state(), Integer.MAX_VALUE);
-                if (nextPresses < lastPresses) {
-                    stateToPresses.put(pushed.state(), nextPresses);
-                    queue.add(new StateAndPresses<>(state, i, pushed, nextPresses));
-                }
-            }
-        }
-        throw new IllegalArgumentException("No route to target found");
-    }
-
-    private record StateAndPresses<T>(StateAndPresses<T> prev, int push, StateMachineNode<T> node, int presses) {
-
-        List<StateMachineNode<T>> buttonPushes() {
-            return node.buttonPushes();
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder out = new StringBuilder();
-            if (prev != null) {
-                out.append(prev).append(" push ").append(push).append(", ");
-            }
-            out.append(node.state());
-            return out.toString();
-        }
+        return Dijkstra.fewestSteps(this, target, StateMachineNode::state, StateMachineNode::buttonPushes);
     }
 
     private static <T> StateMachineNode<T> initState(Machine machine, T state) {
