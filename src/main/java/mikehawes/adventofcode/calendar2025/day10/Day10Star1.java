@@ -23,7 +23,7 @@ public class Day10Star1 {
 
     private static int fewestButtonPresses(Machine machine) {
         IO.println("Machine: " + machine);
-        Machine.State start = machine.mapStateMachine();
+        State start = machine.mapStateMachine();
         IO.println("Finding fewest button presses...");
         Instant startTime = Instant.now();
         LinkedList<StateAndPresses> queue = new LinkedList<>();
@@ -40,7 +40,7 @@ public class Day10Star1 {
         throw new IllegalArgumentException("No route to target found");
     }
 
-    private record StateAndPresses(Machine.State state, int presses) {
+    private record StateAndPresses(State state, int presses) {
 
         boolean lightsMatch(Machine machine) {
             return machine.lightsTarget().equals(state.lights());
@@ -48,7 +48,7 @@ public class Day10Star1 {
 
         void enqueueNext(LinkedList<StateAndPresses> queue) {
             int nextPresses = presses + 1;
-            for (Machine.State pushed : state.buttonPushes()) {
+            for (State pushed : state.buttonPushes()) {
                 queue.addLast(new StateAndPresses(pushed, nextPresses));
             }
         }
