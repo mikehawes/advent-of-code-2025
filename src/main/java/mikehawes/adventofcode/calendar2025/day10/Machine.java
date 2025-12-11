@@ -17,7 +17,7 @@ public record Machine(IndicatorLights lightsTarget, List<Button> buttons, Joltag
 
     @Override
     public String toString() {
-        return lightsTarget + " " + buttons.stream().map(Button::toString).collect(Collectors.joining(" "));
+        return lightsTarget + " " + buttons.stream().map(Button::toString).collect(Collectors.joining(" ")) + " " + joltagesTarget;
     }
 
 }

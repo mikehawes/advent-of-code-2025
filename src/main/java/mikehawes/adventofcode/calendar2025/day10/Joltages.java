@@ -1,6 +1,7 @@
 package mikehawes.adventofcode.calendar2025.day10;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record Joltages(List<Integer> levels) {
@@ -11,5 +12,10 @@ public record Joltages(List<Integer> levels) {
                 .map(Integer::parseInt)
                 .toList();
         return new Joltages(levels);
+    }
+
+    @Override
+    public String toString() {
+        return "{" + levels.stream().map(i -> "" + i).collect(Collectors.joining(",")) + "}";
     }
 }
