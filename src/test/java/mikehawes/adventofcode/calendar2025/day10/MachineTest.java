@@ -20,7 +20,8 @@ public class MachineTest {
                                 new Button(List.of(2)),
                                 new Button(List.of(2, 3)),
                                 new Button(List.of(0, 2)),
-                                new Button(List.of(0, 1)))));
+                                new Button(List.of(0, 1))),
+                        new Joltages(List.of(3, 5, 4, 7))));
     }
 
     @Test
