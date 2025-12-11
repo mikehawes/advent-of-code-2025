@@ -3,9 +3,7 @@ package mikehawes.adventofcode.calendar2025.day10;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Day10Star1 {
 
@@ -25,32 +23,32 @@ public class Day10Star1 {
         IO.println("Machine: " + machine);
         State start = machine.mapStateMachine();
         IO.println("Finding fewest button presses...");
-        Instant startTime = Instant.now();
-        LinkedList<StateAndPresses> queue = new LinkedList<>();
-        queue.addLast(new StateAndPresses(start, 0));
+        Map<IndicatorLights, Integer> lightsToPresses = new HashMap<>();
+        lightsToPresses.put(start.lights(), 0);
+        PriorityQueue<StateAndPresses> queue = new PriorityQueue<>(Comparator.comparing(StateAndPresses::presses));
+        queue.add(new StateAndPresses(start, 0));
         while (!queue.isEmpty()) {
-            StateAndPresses state = queue.pollFirst();
-            if (state.lightsMatch(machine)) {
-                Instant endTime = Instant.now();
-                IO.println("Found " + state.presses() + " in " + Duration.between(startTime, endTime));
-                return state.presses();
+            StateAndPresses state = queue.poll();
+            int nextPresses = state.presses() + 1;
+            for (State pushed : state.buttonPushes()) {
+                if (pushed.lights().equals(machine.lightsTarget())) {
+                    IO.println("Found " + nextPresses);
+                    return nextPresses;
+                }
+                int lastPresses = lightsToPresses.getOrDefault(pushed.lights(), Integer.MAX_VALUE);
+                if (nextPresses < lastPresses) {
+                    lightsToPresses.put(pushed.lights(), nextPresses);
+                    queue.add(new StateAndPresses(pushed, nextPresses));
+                }
             }
-            state.enqueueNext(queue);
         }
         throw new IllegalArgumentException("No route to target found");
     }
 
     private record StateAndPresses(State state, int presses) {
 
-        boolean lightsMatch(Machine machine) {
-            return machine.lightsTarget().equals(state.lights());
-        }
-
-        void enqueueNext(LinkedList<StateAndPresses> queue) {
-            int nextPresses = presses + 1;
-            for (State pushed : state.buttonPushes()) {
-                queue.addLast(new StateAndPresses(pushed, nextPresses));
-            }
+        List<State> buttonPushes() {
+            return state.buttonPushes();
         }
     }
 }
