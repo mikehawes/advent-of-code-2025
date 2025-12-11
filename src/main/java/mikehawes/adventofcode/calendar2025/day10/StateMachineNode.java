@@ -13,12 +13,44 @@ public record StateMachineNode<T>(T state, List<StateMachineNode<T>> buttonPushe
     }
 
     public static <T> StateMachineNode<T> mapFrom(Machine machine, T initialState, BiFunction<Button, T, T> pressButton) {
+        IO.println("Machine: " + machine);
         IO.println("Mapping state machine...");
         StateMachineNode<T> start = initState(machine, initialState);
         Map<T, StateMachineNode<T>> stateToNode = new HashMap<>();
         stateToNode.put(start.state(), start);
         start.setButtonPushes(machine, stateToNode, pressButton);
         return start;
+    }
+
+    public int fewestButtonPresses(T target) {
+        IO.println("Finding fewest button presses...");
+        Map<T, Integer> lightsToPresses = new HashMap<>();
+        lightsToPresses.put(state, 0);
+        PriorityQueue<StateAndPresses<T>> queue = new PriorityQueue<>(Comparator.comparing(StateAndPresses::presses));
+        queue.add(new StateAndPresses<>(this, 0));
+        while (!queue.isEmpty()) {
+            StateAndPresses<T> state = queue.poll();
+            int nextPresses = state.presses() + 1;
+            for (StateMachineNode<T> pushed : state.buttonPushes()) {
+                if (pushed.state().equals(target)) {
+                    IO.println("Found " + nextPresses);
+                    return nextPresses;
+                }
+                int lastPresses = lightsToPresses.getOrDefault(pushed.state(), Integer.MAX_VALUE);
+                if (nextPresses < lastPresses) {
+                    lightsToPresses.put(pushed.state(), nextPresses);
+                    queue.add(new StateAndPresses<>(pushed, nextPresses));
+                }
+            }
+        }
+        throw new IllegalArgumentException("No route to target found");
+    }
+
+    private record StateAndPresses<T>(StateMachineNode<T> state, int presses) {
+
+        List<StateMachineNode<T>> buttonPushes() {
+            return state.buttonPushes();
+        }
     }
 
     private static <T> StateMachineNode<T> initState(Machine machine, T state) {
