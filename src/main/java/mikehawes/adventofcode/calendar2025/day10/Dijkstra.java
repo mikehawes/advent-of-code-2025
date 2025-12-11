@@ -22,8 +22,8 @@ public class Dijkstra {
                     IO.println("Found distance " + newDistance + ": " + next);
                     return newDistance;
                 }
-                int lastPresses = stateToDistance.getOrDefault(next.state(), Integer.MAX_VALUE);
-                if (newDistance < lastPresses) {
+                int lastDistance = stateToDistance.getOrDefault(next.state(), Integer.MAX_VALUE);
+                if (newDistance < lastDistance) {
                     stateToDistance.put(next.state(), newDistance);
                     queue.add(next);
                 }
