@@ -3,6 +3,8 @@ package mikehawes.adventofcode.calendar2025.day10;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Function;
 
 public class Day10Star2 {
 
@@ -19,7 +21,18 @@ public class Day10Star2 {
     }
 
     private static int fewestButtonPresses(Machine machine) {
-        return StateMachineNode.mapJoltagesFrom(machine)
-                .fewestButtonPresses(machine.joltagesTarget());
+        IO.println("Machine: " + machine);
+        List<Integer> maxPressesPerButton = machine.buttons().stream()
+                .map(button -> button.maxPressesForTarget(machine))
+                .toList();
+        long states = maxPressesPerButton.stream().mapToLong(i -> (long) i).reduce(1L, (a, b) -> a * b);
+        long maxPresses = maxPressesPerButton.stream().mapToLong(i -> (long) i).sum();
+        IO.println("Found states: " + states);
+        IO.println("Found max presses: " + maxPresses);
+        Joltages start = Joltages.allZero(machine);
+        return Dijkstra.fewestSteps(start, machine.joltagesTarget(), Function.identity(),
+                joltages -> machine.buttons().stream()
+                        .map(button -> button.press(joltages))
+                        .toList());
     }
 }

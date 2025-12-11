@@ -7,8 +7,8 @@ public class Dijkstra {
 
     public static <N, T> int fewestSteps(N start, T target, Function<N, T> getState, Function<N, List<N>> getLinks) {
 
-        Map<T, Integer> stateToPresses = new HashMap<>();
-        stateToPresses.put(getState.apply(start), 0);
+        Map<T, Integer> stateToDistance = new HashMap<>();
+        stateToDistance.put(getState.apply(start), 0);
         PriorityQueue<State<N, T>> queue = new PriorityQueue<>(Comparator.comparing(State::distance));
         queue.add(new State<>(null, 0, start, getState.apply(start), 0));
         while (!queue.isEmpty()) {
@@ -22,9 +22,9 @@ public class Dijkstra {
                     IO.println("Found distance " + newDistance + ": " + next);
                     return newDistance;
                 }
-                int lastPresses = stateToPresses.getOrDefault(next.state(), Integer.MAX_VALUE);
+                int lastPresses = stateToDistance.getOrDefault(next.state(), Integer.MAX_VALUE);
                 if (newDistance < lastPresses) {
-                    stateToPresses.put(next.state(), newDistance);
+                    stateToDistance.put(next.state(), newDistance);
                     queue.add(next);
                 }
             }

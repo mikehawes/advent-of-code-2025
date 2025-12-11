@@ -31,6 +31,18 @@ public record Button(List<Integer> indexes) {
         return new Joltages(levels);
     }
 
+    public int maxPressesForTarget(Machine machine) {
+        Joltages target = machine.joltagesTarget();
+        int maxPresses = Integer.MAX_VALUE;
+        for (int index : indexes) {
+            int targetJoltage = target.levels().get(index);
+            if (targetJoltage < maxPresses) {
+                maxPresses = targetJoltage;
+            }
+        }
+        return maxPresses;
+    }
+
     @Override
     public String toString() {
         return "(" + indexes.stream().map(i -> "" + i).collect(Collectors.joining(",")) + ")";
