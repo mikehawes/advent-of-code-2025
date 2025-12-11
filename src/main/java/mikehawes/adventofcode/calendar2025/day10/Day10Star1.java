@@ -21,7 +21,7 @@ public class Day10Star1 {
 
     private static int fewestButtonPresses(Machine machine) {
         IO.println("Machine: " + machine);
-        State start = machine.mapStateMachine();
+        LightsState start = machine.mapLightsStateMachine();
         IO.println("Finding fewest button presses...");
         Map<IndicatorLights, Integer> lightsToPresses = new HashMap<>();
         lightsToPresses.put(start.lights(), 0);
@@ -30,7 +30,7 @@ public class Day10Star1 {
         while (!queue.isEmpty()) {
             StateAndPresses state = queue.poll();
             int nextPresses = state.presses() + 1;
-            for (State pushed : state.buttonPushes()) {
+            for (LightsState pushed : state.buttonPushes()) {
                 if (pushed.lights().equals(machine.lightsTarget())) {
                     IO.println("Found " + nextPresses);
                     return nextPresses;
@@ -45,9 +45,9 @@ public class Day10Star1 {
         throw new IllegalArgumentException("No route to target found");
     }
 
-    private record StateAndPresses(State state, int presses) {
+    private record StateAndPresses(LightsState state, int presses) {
 
-        List<State> buttonPushes() {
+        List<LightsState> buttonPushes() {
             return state.buttonPushes();
         }
     }

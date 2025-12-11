@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public record State(IndicatorLights lights, List<State> buttonPushes) {
+public record LightsState(IndicatorLights lights, List<LightsState> buttonPushes) {
 
     @Override
     public String toString() {
@@ -23,12 +23,12 @@ public record State(IndicatorLights lights, List<State> buttonPushes) {
             return;
         }
         out.println(lights + ":");
-        for (State buttonPush : buttonPushes) {
+        for (LightsState buttonPush : buttonPushes) {
             out.println("  " + buttonPush.lights());
         }
         out.println();
         visitedStates.add(lights);
-        for (State buttonPush : buttonPushes) {
+        for (LightsState buttonPush : buttonPushes) {
             buttonPush.printIfVisit(out, visitedStates);
         }
     }
